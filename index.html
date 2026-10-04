@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File 0x01 — The Brief</title>
+<link rel="stylesheet" href="style2.css">
+</head>
+<body>
+<div class="bg-base"></div>
+<div class="bg-red"></div>
+<div class="bg-cyan"></div>
+<div class="bg-scan"></div>
+<div class="bg-flicker"></div>
+<div class="bg-vignette"></div>
+
+<div class="wrap">
+
+<h1>📁 FILE 0x01 — "brief.pdf"</h1>
+
+<div class="incident">
+<strong>INCIDENT REPORT — RECOVERED ARTIFACT</strong><br><br>
+A USB drive was found in the CS lab, locker 14, last Friday.
+It belonged to a club member known only as <strong>"V"</strong>,
+who stopped attending last semester.<br><br>
+The drive contained a single file: <code>brief.pdf</code>.
+It won't open. V left something inside.
+</div>
+
+<div class="file-meta">
+<table>
+<tr><td>FILENAME</td><td>brief.pdf</td></tr>
+<tr><td>RECOVERED FROM</td><td>USB — locker 14</td></tr>
+<tr><td>OWNER</td><td><span class="redacted">████████</span> (V)</td></tr>
+<tr><td>STATUS</td><td>Unopened</td></tr>
+<tr><td>DEADLINE</td><td class="deadline">Sunday 11:59 PM</td></tr>
+</table>
+</div>
+
+<p><strong>Your task:</strong> Open the file. Find what V hid. Submit the flag.</p>
+
+<a class="download" href="brief.pdf" download>⬇ DOWNLOAD brief.pdf</a>
+
+<div class="flag-format">Flag format: <code>NIBM{...}</code></div>
+
+<h2>Hints</h2>
+<p>Reveal only if stuck for 10+ minutes.</p>
+<details><summary>💡 Hint 1</summary><p>The file says it's a PDF. Does it actually behave like one?</p></details>
+<details><summary>💡 Hint 2</summary><p>Run <code>file brief.pdf</code> in a terminal. What does it say it really is?</p></details>
+<details><summary>💡 Hint 3</summary><p>If it's a ZIP, extract it. Not every flag you find is real — verify before you submit.</p></details>
+<details><summary>💡 Hint 4</summary><p>The image won't open. Something's wrong with its header. Look up "PNG magic bytes."</p></details>
+
+<h2>Submit</h2>
+<form class="submit-form" id="flagForm" onsubmit="return false;">
+  <label for="name">Discord handle / Name *</label>
+  <input type="text" id="name" required autocomplete="off">
+  <label for="team">Team name (optional)</label>
+  <input type="text" id="team" autocomplete="off">
+  <label for="flag">Flag *</label>
+  <input type="text" id="flag" required autocomplete="off" placeholder="NIBM{...}">
+  <button type="button" id="submitBtn" style="margin-top:16px;padding:12px 24px;background:#66ccff;color:#000;border:none;border-radius:4px;font-weight:bold;cursor:pointer;font-family:inherit;font-size:1em;letter-spacing:1px;">→ SUBMIT FLAG</button>
+  <div id="result"></div>
+</form>
+
+<h2>Rules</h2>
+<ul>
+<li>No attacking the infrastructure or other teams.</li>
+<li>No flag sharing.</li>
+<li>Google is allowed. Asking for the answer isn't.</li>
+<li>Stuck? Ask in <code>#help</code>. We'll point, not tell.</li>
+</ul>
+
+<blockquote>"Some doors are locked for a reason. Others just look that way." — V</blockquote>
+
+<footer style="margin-top:50px; padding-top:20px; border-top:1px solid #333; color:#666; font-size:0.85em; text-align:center;">
+  Crafted by <span style="color:#ff5555; font-weight:bold; text-shadow:0 0 8px rgba(255,85,85,0.6);">Cyber Griffith</span>
+  <br>
+  <span style="font-size:0.9em;">NIBM Cyber Security Club · Project Blackout · 2026</span>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var WEB_APP_URL = 'https://nibm-ctf-proxy.anukwickramasinghe7.workers.dev';
+
+  function showResult(cls, html){
+    var el = document.getElementById('result');
+    if (!el) { return; }
+    el.className = cls;
+    el.innerHTML = html;
+    el.style.display = 'block';
+    el.style.marginTop = '16px';
+    el.style.padding = '14px';
+    el.style.borderRadius = '4px';
+    el.style.fontSize = '1.05em';
+    if (cls === 'ok') {
+      el.style.background = 'rgba(13,40,24,0.95)';
+      el.style.border = '2px solid #2ea043';
+      el.style.color = '#3fb950';
+    } else if (cls === 'error') {
+      el.style.background = 'rgba(45,15,15,0.95)';
+      el.style.border = '2px solid #f85149';
+      el.style.color = '#ff7b72';
+    } else {
+      el.style.background = 'transparent';
+      el.style.border = 'none';
+      el.style.color = 'inherit';
+      el.style.padding = '0';
+      el.style.display = 'none';
+    }
+  }
+
+  function submitFlag(){
+    var btn = document.getElementById('submitBtn');
+    var nameEl = document.getElementById('name');
+    var teamEl = document.getElementById('team');
+    var flagEl = document.getElementById('flag');
+
+    var name = nameEl.value.trim();
+    var team = teamEl.value.trim();
+    var flag = flagEl.value.trim();
+
+    if (!name) { showResult('error', '⚠️ Enter your Discord handle / name first.'); return; }
+    if (!flag) { showResult('error', '⚠️ Enter a flag first.'); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'CHECKING...';
+    showResult('', '');
+
+    fetch(WEB_APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ name: name, team: team, flag: flag, week: 'week1' })
+    })
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      if (data.status === 'correct') {
+        showResult('ok', '<strong>✅ Correct!</strong> +' + data.points + ' pts. Nice work.');
+        document.getElementById('flagForm').reset();
+      } else if (data.status === 'wrong') {
+        showResult('error', '<strong>❌ Wrong flag.</strong> Check your work and try again.');
+      } else {
+        showResult('error', '⚠️ ' + (data.message || 'Server error.'));
+      }
+    })
+    .catch(function(err){
+      showResult('error', '⚠️ Network error: ' + err.message);
+    })
+    .then(function(){
+      btn.disabled = false;
+      btn.textContent = '→ SUBMIT FLAG';
+    });
+  }
+
+  document.getElementById('submitBtn').onclick = submitFlag;
+})();
+</script>
+
+</body>
+</html>
